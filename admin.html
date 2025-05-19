@@ -1,0 +1,31 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Giriş</title>
+  <style>
+    body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; margin-top: 100px; }
+    input, button { padding: 10px; margin: 10px; width: 250px; }
+  </style>
+</head>
+<body>
+  <h2>Admin Panel Girişi</h2>
+  <input type="text" id="kullanici" placeholder="Kullanıcı Adı" />
+  <input type="password" id="sifre" placeholder="Şifre" />
+  <button onclick="girisYap()">Giriş Yap</button>
+
+  <script>
+    function girisYap() {
+      const user = document.getElementById("kullanici").value;
+      const pass = document.getElementById("sifre").value;
+      if (user === "admin" && pass === "1234") {
+        window.location.href = "panel.html";
+      } else {
+        alert("Hatalı giriş!");
+      }
+    }
+  </script>
+</body>
+</html>
