@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ViaBonte - The View From the Afternoon</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: #fff;
+      color: #111;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .logo h1 {
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    .logo span {
+      font-size: 1.2rem;
+      font-weight: 400;
+    }
+
+    .product-img {
+      width: 100%;
+      border-radius: 12px;
+      object-fit: cover;
+    }
+
+    .product-info {
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+
+    .product-info h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .product-info p {
+      margin-top: 0.5rem;
+      color: #555;
+    }
+
+    .price {
+      margin-top: 1rem;
+    }
+
+    .price del {
+      color: #999;
+      font-size: 1rem;
+    }
+
+    .price strong {
+      font-size: 1.6rem;
+      color: #1e1e1e;
+      display: block;
+      margin-top: 0.25rem;
+    }
+
+    .btn {
+      margin-top: 2rem;
+      background-color: #24a469;
+      color: #fff;
+      padding: 1rem;
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn:hover {
+      background-color: #1d8a5a;
+    }
+
+    .form-section, .payment-section, #bakim-uyari, #havale-bilgileri {
+      display: none;
+      margin-top: 2rem;
+      width: 100%;
+    }
+
+    .form-section.active, .payment-section.active {
+      display: block;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="logo">
+    <h1>VB</h1>
+    <span>ViaBonte</span>
+  </div>
+
+  <img class="product-img" src="viabonte.jpg" alt="The View From the Afternoon">
+
+  <div class="product-info">
+    <h2>The View From the Afternoon</h2>
+    <p>Mixed bouquet in a glass vase</p>
+    <div class="price">
+      <del>799 TL</del>
+      <strong>399 TL</strong>
+    </div>
+  </div>
+
+  <button class="btn" id="alici-bilgisi-ac">ÖDEMEYE GEÇ</button>
+
+  <div class="form-section">
+    <h3>Alıcı Bilgileri</h3>
+    <input type="text" placeholder="Ad Soyad">
+    <input type="text" placeholder="Adres">
+    <select id="il">
+      <option>İl Seçin</option>
+      <option>İstanbul</option>
+      <option>Ankara</option>
+      <option>İzmir</option>
+      <option>Bursa</option>
+      <option>Antalya</option>
+    </select>
+    <select id="ilce">
+      <option>İlçe Seçin</option>
+    </select>
+    <input type="datetime-local">
+    <button class="btn continue-to-payment">Ödemeye Geç</button>
+  </div>
+
+  <div class="payment-section">
+    <h3>Ödeme Bilgileri</h3>
+    <input type="text" placeholder="Kart Numarası">
+    <input type="text" placeholder="Son Kullanma Tarihi (AA/YY)">
+    <input type="text" placeholder="CVV">
+    <button class="payment-submit">Ödemeyi Tamamla</button>
+  </div>
+
+  <div id="bakim-uyari">
+    <h3 style="color: #d32f2f; text-align: center;">Bakım Var</h3>
+    <p style="text-align: center;">Şu anda sadece havale/EFT ile ödeme yapılabilmektedir.</p>
+    <button class="btn" id="show-havale" style="margin-top: 1rem; background-color: #ff9800;">Havale ile Ödemeye Geç</button>
+  </div>
+
+  <div id="havale-bilgileri">
+    <h3>Havale / EFT Bilgileri</h3>
+    <p><strong>Banka:</strong> Ziraat Bankası</p>
+    <p><strong>IBAN:</strong> TR00 0000 0000 0000 0000 0000 00</p>
+    <p><strong>Alıcı:</strong> ViaBonte Çiçekçilik</p>
+    <p id="siparis-no"></p>
+    <p style="font-size: 0.9rem; margin-top: 1rem;">Lütfen açıklama kısmına <strong>sipariş numaranızı</strong> yazmayı unutmayınız.</p>
+    <button class="btn" style="margin-top: 1rem; background-color: #24a469;">Ödemeyi Yaptım</button>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.getElementById("alici-bilgisi-ac").addEventListener("click", function () {
+        document.querySelector(".form-section").classList.add("active");
+        this.style.display = "none";
+      });
+
+      document.querySelector(".continue-to-payment").addEventListener("click", function () {
+        document.querySelector(".form-section").style.display = "none";
+        document.querySelector(".payment-section").classList.add("active");
+      });
+
+      const odemeBtn = document.querySelector(".payment-submit");
+      if (odemeBtn) {
+        odemeBtn.addEventListener("click", function () {
+          document.querySelector(".payment-section").style.display = "none";
+          document.getElementById("bakim-uyari").style.display = "block";
+        });
+      }
+
+      document.getElementById("show-havale").addEventListener("click", function () {
+        document.getElementById("bakim-uyari").style.display = "none";
+        const siparisNo = Math.floor(Math.random() * 900000 + 100000);
+        document.getElementById("siparis-no").textContent = "Sipariş Numaranız: " + siparisNo;
+        document.getElementById("havale-bilgileri").style.display = "block";
+      });
+
+      const ilIlce = {
+        "İstanbul": ["Kadıköy", "Beşiktaş", "Şişli"],
+        "Ankara": ["Çankaya", "Keçiören", "Yenimahalle"],
+        "İzmir": ["Konak", "Bornova", "Karşıyaka"],
+        "Bursa": ["Osmangazi", "Nilüfer", "Yıldırım"],
+        "Antalya": ["Muratpaşa", "Konyaaltı", "Kepez"]
+      };
+
+      document.getElementById("il").addEventListener("change", function () {
+        const ilceSelect = document.getElementById("ilce");
+        ilceSelect.innerHTML = '<option>İlçe Seçin</option>';
+        const selected = this.value;
+        if (ilIlce[selected]) {
+          ilIlce[selected].forEach(function (ilce) {
+            const opt = document.createElement("option");
+            opt.value = ilce;
+            opt.innerText = ilce;
+            ilceSelect.appendChild(opt);
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
